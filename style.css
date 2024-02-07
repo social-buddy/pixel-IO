@@ -1,0 +1,28 @@
+.pixelClass {
+  border: 2px solid rgb(11, 139, 129);
+  width: 1600px;
+  height: 800px;
+  position: absolute
+}
+
+.subPixel {
+  border: 1px solid #000;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "sidebar iframe"
+    "sidebar iframe";
+}
+
+.custombar{
+  grid-area: sidebar;
+}
+
+.iframeModal{
+  grid-area: iframe;
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Exemple Pixel IO</title>
+    <script src="/dist/index.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--<script src="https://mb.pixel.swello.com/lib/pixelio.min.js"></script>-->
+    <style>
+      .iframe {
+        width: 900px;
+        height: 600px;
+      }
+      .img-container {
+        display: flex;
+        width: 200px;
+        height: 200px;
+        background: #000;
+        padding: 2em;
+      }
+      .img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: #fff dotted;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="flex gap-2 p-5">
+      <input type="file" id="file" style="display: none" />
+      <div class="img-container">
+        <img id="preview" crossorigin="anonymous" class="img" />
+      </div>
+      <div class="div-columns">
+        <div>
+          <button
+            id="buttonIframe"
+            class="p-2 text-white bg-pink-500 rounded-md"
+          >
+            Open Iframe
+          </button>
+          <button id="buttonWindow" class="p-1">open Window</button>
+          <button id="closeButtonIframe" class="p-1em">close</button>
+        </div>
+        <div id="iframeContainer" class="iframeModal"></div>
+      </div>
+    </div>
+    <script>
+      // DOM element
+      const formfile = document.querySelector('#file')
+      const button = document.querySelector('#buttonIframe')
+      const buttonWindow = document.querySelector('#buttonWindow')
+      const closeButton = document.querySelector('#closeButtonIframe')
+      const preview = document.querySelector('#preview')
+      // img variable
+      let img = null
+      // PIXEL IO  config variable
+      const token = 'SWELLO-TOKEN'
+      const size = {
+        width: 800,
+        height: 600,
+      }
+      const css = 'iframe'
+      const domain = 'http://127.0.0.1:5500'
+
+      const saveMenuList = [
+        {
+          label: 'Exporter pour Swello',
+          icon: 'arrow-circle-left mx-10',
+          directDownload: false,
+          eventName: 'testEvent',
+          data: { saveToMyLib: false },
+        },
+        {
+          label: 'Enregistrer dans ma librairie',
+          icon: 'book mx-10',
+          directDownload: false,
+          eventName: 'testEvent',
+          data: { saveToMyLib: true },
+        },
+        {
+          label: 'Télécharger au format png',
+          directDownload: true,
+          icon: 'arrow-circle-down mx-10',
+          data: { format: 'png' },
+        },
+        {
+          label: 'Télécharger au format jpeg',
+          directDownload: true,
+          icon: 'arrow-circle-down mx-10',
+          data: { format: 'jpeg' },
+        },
+      ]
+
+      const { PixelIO, Events } = PixelIOLib
+
+      const pio = new PixelIO(token, {
+        size,
+        css,
+        domain,
+        upgradeEvent: true,
+        closeButton: true,
+        saveMenuList,
+        debug: true,
+      })
+
+      pio.on(Events.EXPORT, (base64) => {
+        preview.src = base64
+        pio.close()
+      })
+      pio.on('upgrade', (data) => {
+        console.log('modal event', data)
+      })
+      pio.on('close', () => {
+        console.log('close event')
+      })
+      pio.on('clickLogo', () => {
+        console.log('clickLogo event')
+      })
+      pio.on('testEvent', (data) => {
+        preview.src = data.image
+        console.log('called')
+        pio.close()
+      })
+
+      // DOM LISTENER
+      button.addEventListener('click', () =>
+        pio.open({
+          image: img,
+          container: {
+            type: 'iframe',
+            parameters: ['#iframeContainer'],
+          },
+          size: {
+            height: 500,
+            width: 1024,
+          },
+        })
+      )
+      buttonWindow.addEventListener('click', () =>
+        pio.open({
+          image: img,
+          container: {
+            type: 'window',
+            parameters: [],
+          },
+          size: {
+            height: 500,
+            width: 1024,
+          },
+        })
+      )
+      closeButton.addEventListener('click', () => pio.close())
+      preview.addEventListener('click', () => formfile.click())
+      formfile.addEventListener('change', (evt) => {
+        img = evt.target.files[0]
+        const reader = new FileReader()
+        reader.addEventListener('load', () => (preview.src = reader.result))
+        reader.readAsDataURL(img)
+      })
+    </script>
+  </body>
+</html>

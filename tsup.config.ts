@@ -1,5 +1,8 @@
 import { replace } from 'esbuild-plugin-replace'
 import { defineConfig } from 'tsup'
+import { execSync } from 'child_process'
+
+const revision = execSync('git rev-parse HEAD').toString().trim()
 
 const exportUri = () => {
   switch (process.env.NODE_ENV) {
@@ -30,6 +33,7 @@ export default defineConfig((options) => {
     esbuildPlugins: [
       replace({
         URI: uris.url,
+        pio_version: revision,
       }),
     ],
   }

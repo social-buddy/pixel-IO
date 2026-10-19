@@ -119,6 +119,18 @@ type PixelIOConfig = {
      */
     token: string;
     /**
+     * Éditeur à ouvrir : l'ancien éditeur (par défaut) ou Pixel Studio.
+     */
+    editor?: 'pixel' | 'studio';
+    /**
+     * Langue imposée à Pixel Studio, par exemple « fr-FR ». Sans elle, Pixel Studio prend la langue du navigateur.
+     */
+    locale?: string;
+    /**
+     * Affiche ou cache le menu Langue de Pixel Studio (affiché par défaut).
+     */
+    languageMenu?: boolean;
+    /**
      * Dimensions de PixelIO.
      */
     size: SizeObject;
@@ -189,6 +201,11 @@ declare class PixelIO extends EventEmitter {
      * @readonly
      */
     static readonly PIXEL_URI = "URI";
+    /**
+     * Chemin de Pixel Studio sur le domaine du pixel.
+     * @readonly
+     */
+    static readonly STUDIO_PATH = "/studio/index.html";
     /**
      * Constante représentant l'identifiant de l'émetteur.
      * @readonly

@@ -78,6 +78,18 @@ export type PixelIOConfig = {
    */
   token: string
   /**
+   * Éditeur à ouvrir : l'ancien éditeur (par défaut) ou Pixel Studio.
+   */
+  editor?: 'pixel' | 'studio'
+  /**
+   * Langue imposée à Pixel Studio, par exemple « fr-FR ». Sans elle, Pixel Studio prend la langue du navigateur.
+   */
+  locale?: string
+  /**
+   * Affiche ou cache le menu Langue de Pixel Studio (affiché par défaut).
+   */
+  languageMenu?: boolean
+  /**
    * Dimensions de PixelIO.
    */
   size: SizeObject

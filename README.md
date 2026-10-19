@@ -97,6 +97,27 @@ const pixel = new PixelIO(customConfig)
 pixel.open()
 ```
 
+### Exemple 3 : ouvrir Pixel Studio et récupérer l'image
+
+`editor: 'studio'` ouvre Pixel Studio (servi sous `/studio/` du même domaine) à la place de l'ancien éditeur. Pour
+recevoir l'image, renseigner `domain` avec l'origine de la page hôte : le token passe alors par le message `init`.
+
+```javascript
+const pixel = new PixelIO({
+  token: 'your_token',
+  domain: 'https://app.swello.com',
+  editor: 'studio',
+  locale: 'fr-FR', // facultatif : sinon la langue du navigateur
+  languageMenu: false, // facultatif : cache le menu Langue
+})
+
+// Fichier > Envoyer, dans Pixel Studio, renvoie l'image en data URL PNG
+pixel.on('export', image => {
+  // utiliser l'image dans le dashboard
+})
+pixel.open()
+```
+
 # 5. Events <a name="events"></a>
 
 PixelIO emits the following events:

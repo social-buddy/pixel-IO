@@ -37,6 +37,12 @@ export class PixelIO extends EventEmitter {
   static readonly PIXEL_URI = 'URI'
 
   /**
+   * Chemin de Pixel Studio sur le domaine du pixel.
+   * @readonly
+   */
+  static readonly STUDIO_PATH = '/studio/index.html'
+
+  /**
    * Constante représentant l'identifiant de l'émetteur.
    * @readonly
    */
@@ -334,8 +340,8 @@ export class PixelIO extends EventEmitter {
    * @returns {void}
    */
   private __createContainer(target: ContainerConfig): void {
-    // URL du pixel
-    let url = PixelIO.PIXEL_URI
+    // URL du pixel : Pixel Studio est servi sous /studio/ du même domaine que l'ancien éditeur
+    let url = this.__config.editor === 'studio' ? `${PixelIO.PIXEL_URI}${PixelIO.STUDIO_PATH}` : PixelIO.PIXEL_URI
 
     // Construction de l'URL en fonction de la configuration
     if (isNil(this.__config.domain)) {
@@ -419,6 +425,8 @@ export class PixelIO extends EventEmitter {
             upgradeEvent: this.__config.upgradeEvent,
             closeButton: this.__config.closeButton,
             saveMenuList: this.__config.saveMenuList,
+            locale: this.__config.locale,
+            languageMenu: this.__config.languageMenu,
           }
 
           // Envoi du message au pixel en fonction du type de conteneur

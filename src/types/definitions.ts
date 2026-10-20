@@ -90,6 +90,15 @@ export type PixelIOConfig = {
    */
   languageMenu?: boolean
   /**
+   * Mode d'ouverture de Pixel Studio : simplifié (composition) ou complet (retouche). Sans lui, Pixel Studio reprend
+   * le dernier mode choisi par l'utilisateur, simplifié la première fois.
+   */
+  mode?: 'simplified' | 'full'
+  /**
+   * Laisse l'utilisateur passer d'un mode à l'autre (autorisé par défaut). À false, il reste dans le mode de départ.
+   */
+  modeSwitch?: boolean
+  /**
    * Dimensions de PixelIO.
    */
   size: SizeObject

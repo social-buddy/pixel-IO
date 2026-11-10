@@ -109,6 +109,8 @@ const pixel = new PixelIO({
   editor: 'studio',
   locale: 'fr-FR', // facultatif : sinon la langue du navigateur
   languageMenu: false, // facultatif : cache le menu Langue
+  mode: 'simplified', // facultatif : 'simplified' ou 'full', sinon le dernier mode choisi par l'utilisateur
+  modeSwitch: false, // facultatif : empêche de passer d'un mode à l'autre
 })
 
 // Fichier > Envoyer, dans Pixel Studio, renvoie l'image en data URL PNG

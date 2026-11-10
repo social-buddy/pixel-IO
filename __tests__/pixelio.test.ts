@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { PixelIO, PixelIOConfig } from '../dist'
 
 const DEFAULT_CONFIG: PixelIOConfig = {
@@ -179,5 +179,40 @@ describe(`Gestion de menu`, () => {
     expect(() =>
       pio.removeMenuItems({ directDownload: true, label: 'beta' })
     ).toThrowError('Menu non trouvé, vérifier le label du menu')
+  })
+})
+
+describe(`Adresse de l'éditeur`, () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  function openedUrlOf(config: Partial<PixelIOConfig>): string {
+    const open = vi.fn(() => ({ closed: false }))
+    vi.stubGlobal('window', { open, addEventListener: vi.fn(), removeEventListener: vi.fn() })
+    new PixelIO({ ...config, container: { type: 'window', parameters: [] } }).open()
+    return open.mock.calls[0][0]
+  }
+
+  test(`Ouvre Pixel Studio sur l'adresse fixée au build sans editorUrl`, () => {
+    expect(openedUrlOf({ editor: 'studio', domain: 'https://app.swello.com' })).toMatch(/^https:\/\/mb\.pixel\.swello\.com\/studio\/index\.html\?/)
+  })
+
+  test(`Ouvre l'éditeur sur editorUrl quand elle est donnée`, () => {
+    expect(openedUrlOf({ editor: 'studio', editorUrl: 'http://localhost:8088/', domain: 'http://localhost:8090' })).toMatch(/^http:\/\/localhost:8088\/\?d=http:\/\/localhost:8090&/)
+  })
+
+  test(`N'accepte que les messages venant de l'origine d'editorUrl`, () => {
+    const listeners: Array<(message: unknown) => void> = []
+    vi.stubGlobal('window', { open: vi.fn(() => ({ closed: false })), addEventListener: (_: string, listener: (message: unknown) => void) => listeners.push(listener), removeEventListener: vi.fn() })
+    const pio = new PixelIO({ editor: 'studio', editorUrl: 'http://localhost:8088/', domain: 'http://localhost:8090', container: { type: 'window', parameters: [] } })
+    const received = vi.fn()
+    pio.on('close', received)
+    pio.open()
+    const closeMessage = { data: { event: 'closePixel', data: {} } }
+    listeners.forEach(listener => listener({ ...closeMessage, origin: 'https://mb.pixel.swello.com' }))
+    expect(received).not.toHaveBeenCalled()
+    listeners.forEach(listener => listener({ ...closeMessage, origin: 'http://localhost:8088' }))
+    expect(received).toHaveBeenCalled()
   })
 })

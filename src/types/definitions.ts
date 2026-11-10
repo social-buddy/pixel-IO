@@ -82,6 +82,11 @@ export type PixelIOConfig = {
    */
   editor?: 'pixel' | 'studio'
   /**
+   * Adresse complète de la page de l'éditeur, par exemple « http://localhost:8088/ » pour le Pixel Studio local.
+   * Sans elle, l'adresse fixée au build de pixel-IO.
+   */
+  editorUrl?: string
+  /**
    * Langue imposée à Pixel Studio, par exemple « fr-FR ». Sans elle, Pixel Studio prend la langue du navigateur.
    */
   locale?: string

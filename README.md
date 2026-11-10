@@ -118,6 +118,9 @@ pixel.on('export', image => {
 pixel.open()
 ```
 
+`editorUrl` remplace l'adresse de l'éditeur fixée au build, par exemple pour ouvrir le Pixel Studio du Docker local :
+`editorUrl: 'http://localhost:8088/'`. Les messages échangés avec l'éditeur passent alors par l'origine de cette adresse.
+
 # 5. Events <a name="events"></a>
 
 PixelIO emits the following events:

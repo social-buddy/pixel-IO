@@ -118,6 +118,16 @@ pixel.on('export', image => {
 pixel.open()
 ```
 
+`multipleImages: true` demande à Pixel Studio toutes les pages du document, un carrousel par exemple, au lieu de la
+seule page affichée. L'événement `export` reçoit alors un tableau de dataURL, une par page dans l'ordre du document ;
+un item du menu de sauvegarde reçoit `images` (le même tableau) à côté d'`image`, qui reste la page affichée.
+
+```javascript
+pixel.on('addToPost', ({ image, images }) => {
+  // images : toutes les pages ; image : la page affichée
+})
+```
+
 `editorUrl` remplace l'adresse de l'éditeur fixée au build, par exemple pour ouvrir le Pixel Studio du Docker local :
 `editorUrl: 'http://localhost:8088/'`. Les messages échangés avec l'éditeur passent alors par l'origine de cette adresse.
 

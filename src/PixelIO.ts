@@ -436,6 +436,7 @@ export class PixelIO extends EventEmitter {
             saveMenuList: this.__config.saveMenuList,
             locale: this.__config.locale,
             languageMenu: this.__config.languageMenu,
+            multipleImages: this.__config.multipleImages,
           }
 
           // Envoi du message au pixel en fonction du type de conteneur

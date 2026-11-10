@@ -216,3 +216,18 @@ describe(`Adresse de l'éditeur`, () => {
     expect(received).toHaveBeenCalled()
   })
 })
+
+describe(`Plusieurs images`, () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  test(`Demande toutes les pages à Pixel Studio dans le message init quand multipleImages est vrai`, () => {
+    const listeners: Array<(message: unknown) => void> = []
+    const editorWindow = { closed: false, postMessage: vi.fn() }
+    vi.stubGlobal('window', { open: vi.fn(() => editorWindow), addEventListener: (_: string, listener: (message: unknown) => void) => listeners.push(listener), removeEventListener: vi.fn() })
+    new PixelIO({ editor: 'studio', multipleImages: true, domain: 'https://app.swello.com', container: { type: 'window', parameters: [] } }).open()
+    listeners.forEach(listener => listener({ origin: 'https://mb.pixel.swello.com', data: { event: 'state', data: 'ready' } }))
+    expect(editorWindow.postMessage).toHaveBeenCalledWith(expect.objectContaining({ event: 'init', multipleImages: true }), 'https://mb.pixel.swello.com')
+  })
+})

@@ -82,6 +82,16 @@ export type PixelIOConfig = {
    */
   editor?: 'pixel' | 'studio'
   /**
+   * Adresse complète de la page de l'éditeur, par exemple « http://localhost:8088/ » pour le Pixel Studio local.
+   * Sans elle, l'adresse fixée au build de pixel-IO.
+   */
+  editorUrl?: string
+  /**
+   * Pixel Studio envoie toutes les pages du document au lieu de la seule page affichée : l'événement export reçoit un
+   * tableau de dataURL, et un item du menu de sauvegarde reçoit images à côté d'image.
+   */
+  multipleImages?: boolean
+  /**
    * Langue imposée à Pixel Studio, par exemple « fr-FR ». Sans elle, Pixel Studio prend la langue du navigateur.
    */
   locale?: string

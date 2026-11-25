@@ -333,6 +333,16 @@ export class PixelIO extends EventEmitter {
     return this.__config.saveMenuList
   }
 
+  private __editorUrl(): string {
+    if (this.__config.editorUrl) return this.__config.editorUrl
+    // Pixel Studio est servi sous /studio/ du même domaine que l'ancien éditeur
+    return this.__config.editor === 'studio' ? `${PixelIO.PIXEL_URI}${PixelIO.STUDIO_PATH}` : PixelIO.PIXEL_URI
+  }
+
+  private __editorOrigin(): string {
+    return new URL(this.__editorUrl()).origin
+  }
+
   /**
    * Méthode privée pour créer le conteneur en fonction de la configuration fournie.
    * @private
@@ -340,8 +350,7 @@ export class PixelIO extends EventEmitter {
    * @returns {void}
    */
   private __createContainer(target: ContainerConfig): void {
-    // URL du pixel : Pixel Studio est servi sous /studio/ du même domaine que l'ancien éditeur
-    let url = this.__config.editor === 'studio' ? `${PixelIO.PIXEL_URI}${PixelIO.STUDIO_PATH}` : PixelIO.PIXEL_URI
+    let url = this.__editorUrl()
 
     // Construction de l'URL en fonction de la configuration
     if (isNil(this.__config.domain)) {
@@ -427,15 +436,16 @@ export class PixelIO extends EventEmitter {
             saveMenuList: this.__config.saveMenuList,
             locale: this.__config.locale,
             languageMenu: this.__config.languageMenu,
+            multipleImages: this.__config.multipleImages,
           }
 
           // Envoi du message au pixel en fonction du type de conteneur
           if (this.__config.container.type === 'iframe') {
             ;(
               this.__pixelContainer as HTMLIFrameElement
-            ).contentWindow?.postMessage(data, PixelIO.DOMAIN)
+            ).contentWindow?.postMessage(data, this.__editorOrigin())
           } else {
-            ;(this.__pixelContainer as Window).postMessage(data, PixelIO.DOMAIN)
+            ;(this.__pixelContainer as Window).postMessage(data, this.__editorOrigin())
           }
         }
         break
@@ -482,7 +492,7 @@ export class PixelIO extends EventEmitter {
       authorizedEvent.includes(msg.data.event) &&
       isNotNil(msg.data.event) &&
       isNotNil(msg.data.data) &&
-      msg.origin === PixelIO.DOMAIN
+      msg.origin === this.__editorOrigin()
     )
   }
 }
